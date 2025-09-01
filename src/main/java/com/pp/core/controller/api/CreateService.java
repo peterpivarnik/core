@@ -8,11 +8,11 @@ package com.pp.core.controller.api;
  */
 public interface CreateService<IR extends Record, OR extends Record> {
 
-    /**
-     * Creates a new entity from the provided request data.
-     *
-     * @param request the data used to create the new entity
-     * @return the created entity as a record
-     */
-    OR create(IR request);
+  /**
+   * Creates a new entity from the provided request data.
+   *
+   * @param request the data used to create the new entity
+   * @return the created entity as a record
+   */
+  OR create(IR request);
 }

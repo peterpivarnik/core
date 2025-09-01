@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Generic controller interface that provides functionality to update entities and map them between DTOs and domain records.
+ * Generic controller interface that provides functionality to update entities and map them between DTOs
+ * and domain records.
  *
  * @param <IR>  the input record type that represents the domain entity
  * @param <OR>  the output record type that represents the domain entity
@@ -36,29 +37,29 @@ public interface UpdateController<
     OD
     > extends ControllerDependencies<ID, IR, FDM, OR, TDM, OD> {
 
-    /**
-     * Updates an existing entity with the provided data.
-     *
-     * @param id      the identifier of the entity to update
-     * @param request the DTO containing the update data
-     * @return the updated entity converted to DTO
-     */
-    @PutMapping(value = "/{id}")
-    @ResponseStatus(OK)
-    @ResponseBody
-    default OD update(@PathVariable("id") final I id, @RequestBody final ID request) {
-        IR requestRecord = getFromUpdateDtoMapper().fromDto(request);
-        OR responseRecord = getService().update(id, requestRecord);
-        return getToDtoMapper().toDto(responseRecord);
-    }
+  /**
+   * Updates an existing entity with the provided data.
+   *
+   * @param id      the identifier of the entity to update
+   * @param request the DTO containing the update data
+   * @return the updated entity converted to DTO
+   */
+  @PutMapping(value = "/{id}")
+  @ResponseStatus(OK)
+  @ResponseBody
+  default OD update(@PathVariable("id") final I id, @RequestBody final ID request) {
+    IR requestRecord = getFromUpdateDtoMapper().fromDto(request);
+    OR responseRecord = getService().update(id, requestRecord);
+    return getToDtoMapper().toDto(responseRecord);
+  }
 
-    /**
-     * Returns the service instance that provides entity update functionality.
-     *
-     * @return the service implementing UpdateService interface
-     */
-    S getService();
+  /**
+   * Returns the service instance that provides entity update functionality.
+   *
+   * @return the service implementing UpdateService interface
+   */
+  S getService();
 
-    @Override
-    FDM getFromUpdateDtoMapper();
+  @Override
+  FDM getFromUpdateDtoMapper();
 }

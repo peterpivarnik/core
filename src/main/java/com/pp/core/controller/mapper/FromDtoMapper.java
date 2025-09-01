@@ -9,11 +9,11 @@ package com.pp.core.controller.mapper;
  */
 public interface FromDtoMapper<D, R extends Record> {
 
-    /**
-     * Map DTO to record.
-     *
-     * @param record DTO to be mapped
-     * @return mapped record
-     */
-    R fromDto(D record);
+  /**
+   * Map DTO to record.
+   *
+   * @param record DTO to be mapped
+   * @return mapped record
+   */
+  R fromDto(D record);
 }

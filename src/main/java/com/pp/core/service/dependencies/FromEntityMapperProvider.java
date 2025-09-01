@@ -18,10 +18,10 @@ public interface FromEntityMapperProvider<
     M extends FromEntityMapper<E, R>,
     R extends Record> {
 
-    /**
-     * Returns the mapper instance that converts entities to records.
-     *
-     * @return the mapper instance implementing FromEntityMapper interface
-     */
-    M getFromEntityMapper();
+  /**
+   * Returns the mapper instance that converts entities to records.
+   *
+   * @return the mapper instance implementing FromEntityMapper interface
+   */
+  M getFromEntityMapper();
 }

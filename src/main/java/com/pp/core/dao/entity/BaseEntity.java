@@ -17,16 +17,16 @@ import java.io.Serializable;
 @MappedSuperclass
 public abstract class BaseEntity<I extends Serializable> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private I id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private I id;
 
-    public I getId() {
-        return id;
-    }
+  public I getId() {
+    return id;
+  }
 
-    public void setId(final I id) {
-        this.id = id;
-    }
+  public void setId(final I id) {
+    this.id = id;
+  }
 }

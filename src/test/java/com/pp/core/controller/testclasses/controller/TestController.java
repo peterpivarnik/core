@@ -19,43 +19,44 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/test")
 public class TestController
-    implements CreateController<CreateTestDto, FromCreateTestDtoMapper, InputTestRecord, TestService, OutputTestRecord, ToTestDtoMapper, TestDto>,
-               DeleteController<Long, TestService>,
-               GetByIdController<Long, TestService, OutputTestRecord, ToTestDtoMapper, TestDto>,
-               UpdateController<Long, UpdateTestDto, FromUpdateTestDtoMapper, InputTestRecord, TestService, OutputTestRecord, ToTestDtoMapper, TestDto> {
+    implements
+    CreateController<CreateTestDto, FromCreateTestDtoMapper, InputTestRecord, TestService, OutputTestRecord, ToTestDtoMapper, TestDto>,
+    DeleteController<Long, TestService>,
+    GetByIdController<Long, TestService, OutputTestRecord, ToTestDtoMapper, TestDto>,
+    UpdateController<Long, UpdateTestDto, FromUpdateTestDtoMapper, InputTestRecord, TestService, OutputTestRecord, ToTestDtoMapper, TestDto> {
 
-    private final TestService testService;
-    private final FromCreateTestDtoMapper fromCreateTestDtoMapper;
-    private final FromUpdateTestDtoMapper fromUpdateTestDtoMapper;
-    private final ToTestDtoMapper toTestDtoMapper;
+  private final TestService testService;
+  private final FromCreateTestDtoMapper fromCreateTestDtoMapper;
+  private final FromUpdateTestDtoMapper fromUpdateTestDtoMapper;
+  private final ToTestDtoMapper toTestDtoMapper;
 
-    public TestController(TestService testService,
-                          FromCreateTestDtoMapper fromCreateTestDtoMapper,
-                          FromUpdateTestDtoMapper fromUpdateTestDtoMapper,
-                          ToTestDtoMapper toTestDtoMapper) {
-        this.testService = testService;
-        this.fromCreateTestDtoMapper = fromCreateTestDtoMapper;
-        this.fromUpdateTestDtoMapper = fromUpdateTestDtoMapper;
-        this.toTestDtoMapper = toTestDtoMapper;
-    }
+  public TestController(TestService testService,
+                        FromCreateTestDtoMapper fromCreateTestDtoMapper,
+                        FromUpdateTestDtoMapper fromUpdateTestDtoMapper,
+                        ToTestDtoMapper toTestDtoMapper) {
+    this.testService = testService;
+    this.fromCreateTestDtoMapper = fromCreateTestDtoMapper;
+    this.fromUpdateTestDtoMapper = fromUpdateTestDtoMapper;
+    this.toTestDtoMapper = toTestDtoMapper;
+  }
 
-    @Override
-    public TestService getService() {
-        return testService;
-    }
+  @Override
+  public TestService getService() {
+    return testService;
+  }
 
-    @Override
-    public FromUpdateTestDtoMapper getFromUpdateDtoMapper() {
-        return fromUpdateTestDtoMapper;
-    }
+  @Override
+  public FromUpdateTestDtoMapper getFromUpdateDtoMapper() {
+    return fromUpdateTestDtoMapper;
+  }
 
-    @Override
-    public FromCreateTestDtoMapper getFromCreateDtoMapper() {
-        return fromCreateTestDtoMapper;
-    }
+  @Override
+  public FromCreateTestDtoMapper getFromCreateDtoMapper() {
+    return fromCreateTestDtoMapper;
+  }
 
-    @Override
-    public ToTestDtoMapper getToDtoMapper() {
-        return toTestDtoMapper;
-    }
+  @Override
+  public ToTestDtoMapper getToDtoMapper() {
+    return toTestDtoMapper;
+  }
 }

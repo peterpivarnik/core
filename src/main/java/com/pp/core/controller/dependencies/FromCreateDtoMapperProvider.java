@@ -11,10 +11,10 @@ import com.pp.core.controller.mapper.FromDtoMapper;
  */
 public interface FromCreateDtoMapperProvider<D, M extends FromDtoMapper<D, R>, R extends Record> {
 
-    /**
-     * Returns the mapper instance used to convert domain records to DTOs.
-     *
-     * @return the mapper instance implementing DtoMapper interface
-     */
-    M getFromCreateDtoMapper();
+  /**
+   * Returns the mapper instance used to convert domain records to DTOs.
+   *
+   * @return the mapper instance implementing DtoMapper interface
+   */
+  M getFromCreateDtoMapper();
 }

@@ -17,15 +17,15 @@ import java.io.Serializable;
 public interface DefaultDeleteService<I extends Serializable, E extends BaseEntity<I>, BR extends BaseRepository<I, E>>
     extends DeleteService<I>, RepositoryProvider<I, E, BR> {
 
-    /**
-     * Deletes an entity with the specified ID using the underlying repository.
-     * This default implementation delegates the delete operation to the repository's
-     * deleteById method.
-     *
-     * @param id the identifier of the entity to be deleted
-     */
-    @Override
-    default void delete(I id) {
-        getRepository().deleteById(id);
-    }
+  /**
+   * Deletes an entity with the specified ID using the underlying repository.
+   * This default implementation delegates the delete operation to the repository's
+   * deleteById method.
+   *
+   * @param id the identifier of the entity to be deleted
+   */
+  @Override
+  default void delete(I id) {
+    getRepository().deleteById(id);
+  }
 }

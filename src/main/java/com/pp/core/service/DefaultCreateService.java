@@ -31,16 +31,16 @@ public interface DefaultCreateService<
     FEM extends FromEntityMapper<E, OR>,
     OR extends Record> extends CreateService<IR, OR>, ServiceDependencies<IR, TEM, I, E, BR, FEM, OR> {
 
-    /**
-     * Creates new entity from request data and returns mapped inputRecord.
-     *
-     * @param inputRecord data for creating new entity
-     * @return outputRecord mapped from saved entity
-     */
-    @Override
-    default OR create(IR inputRecord) {
-        E entity = getToEntityMapper().toEntity(inputRecord);
-        E savedEntity = getRepository().save(entity);
-        return getFromEntityMapper().toRecord(savedEntity);
-    }
+  /**
+   * Creates new entity from request data and returns mapped inputRecord.
+   *
+   * @param inputRecord data for creating new entity
+   * @return outputRecord mapped from saved entity
+   */
+  @Override
+  default OR create(IR inputRecord) {
+    E entity = getToEntityMapper().toEntity(inputRecord);
+    E savedEntity = getRepository().save(entity);
+    return getFromEntityMapper().toRecord(savedEntity);
+  }
 }

@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 public interface DeleteController<I extends Serializable, S extends DeleteService<I>> {
 
-    /**
-     * Deletes an entity by its ID.
-     * Returns HTTP 204 (No Content) on successful deletion.
-     *
-     * @param id the unique identifier of the entity to delete
-     */
-    @DeleteMapping(value = "/{id}")
-    @ResponseStatus(NO_CONTENT)
-    default void delete(@PathVariable("id") final I id) {
-        getService().delete(id);
-    }
+  /**
+   * Deletes an entity by its ID.
+   * Returns HTTP 204 (No Content) on successful deletion.
+   *
+   * @param id the unique identifier of the entity to delete
+   */
+  @DeleteMapping(value = "/{id}")
+  @ResponseStatus(NO_CONTENT)
+  default void delete(@PathVariable("id") final I id) {
+    getService().delete(id);
+  }
 
-    /**
-     * Returns the service instance that provides entity deletion functionality.
-     *
-     * @return the service implementing DeleteService interface
-     */
-    S getService();
+  /**
+   * Returns the service instance that provides entity deletion functionality.
+   *
+   * @return the service implementing DeleteService interface
+   */
+  S getService();
 
 }

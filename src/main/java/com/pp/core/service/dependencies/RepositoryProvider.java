@@ -1,8 +1,8 @@
 package com.pp.core.service.dependencies;
 
 import com.pp.core.dao.entity.BaseEntity;
-import java.io.Serializable;
 import com.pp.core.dao.repository.BaseRepository;
+import java.io.Serializable;
 
 /**
  * Generic interface for providing access to repository instances. This interface acts as a repository
@@ -14,10 +14,10 @@ import com.pp.core.dao.repository.BaseRepository;
  */
 public interface RepositoryProvider<I extends Serializable, E extends BaseEntity<I>, BR extends BaseRepository<I, E>> {
 
-    /**
-     * Returns repository instance used for entity operations.
-     *
-     * @return repository instance
-     */
-    BR getRepository();
+  /**
+   * Returns repository instance used for entity operations.
+   *
+   * @return repository instance
+   */
+  BR getRepository();
 }

@@ -33,28 +33,28 @@ public interface CreateController<
     TDM extends ToDtoMapper<OR, RD>,
     RD> extends ToDtoMapperProvider<OR, TDM, RD>, FromCreateDtoMapperProvider<CD, FDM, IR> {
 
-    /**
-     * Creates a new entity based on the provided DTO data.
-     *
-     * @param createDto the DTO containing the data for entity creation
-     * @return the created entity converted to response DTO
-     */
-    @PostMapping
-    @ResponseStatus(CREATED)
-    @ResponseBody
-    default RD create(@RequestBody final CD createDto) {
-        IR inputRecord = getFromCreateDtoMapper().fromDto(createDto);
-        OR outputRecord = getService().create(inputRecord);
-        return getToDtoMapper().toDto(outputRecord);
-    }
+  /**
+   * Creates a new entity based on the provided DTO data.
+   *
+   * @param createDto the DTO containing the data for entity creation
+   * @return the created entity converted to response DTO
+   */
+  @PostMapping
+  @ResponseStatus(CREATED)
+  @ResponseBody
+  default RD create(@RequestBody final CD createDto) {
+    IR inputRecord = getFromCreateDtoMapper().fromDto(createDto);
+    OR outputRecord = getService().create(inputRecord);
+    return getToDtoMapper().toDto(outputRecord);
+  }
 
-    /**
-     * Returns the service instance that provides entity creation functionality.
-     *
-     * @return the service implementing CreateService interface
-     */
-    S getService();
+  /**
+   * Returns the service instance that provides entity creation functionality.
+   *
+   * @return the service implementing CreateService interface
+   */
+  S getService();
 
-    @Override
-    FDM getFromCreateDtoMapper();
+  @Override
+  FDM getFromCreateDtoMapper();
 }

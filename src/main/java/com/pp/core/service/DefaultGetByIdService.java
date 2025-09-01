@@ -24,20 +24,20 @@ public interface DefaultGetByIdService<
     BR extends BaseRepository<I, E>,
     M extends FromEntityMapper<E, R>,
     R extends Record> extends GetByIdService<I, R>,
-                              FromEntityMapperProvider<I, E, M, R>,
-                              RepositoryProvider<I, E, BR> {
+    FromEntityMapperProvider<I, E, M, R>,
+    RepositoryProvider<I, E, BR> {
 
-    /**
-     * Retrieves an entity by its ID and maps it to a record.
-     *
-     * @param id the identifier of the entity to retrieve
-     * @return mapped entity as a record
-     * @throws EntityNotFoundException if no entity is found with the given ID
-     */
-    @Override
-    default R getById(final I id) {
-        return getRepository().findById(id)
-                              .map(entity -> getFromEntityMapper().toRecord(entity))
-                              .orElseThrow(() -> new EntityNotFoundException("Entity with Id " + id + " not found!"));
-    }
+  /**
+   * Retrieves an entity by its ID and maps it to a record.
+   *
+   * @param id the identifier of the entity to retrieve
+   * @return mapped entity as a record
+   * @throws EntityNotFoundException if no entity is found with the given ID
+   */
+  @Override
+  default R getById(final I id) {
+    return getRepository().findById(id)
+                          .map(entity -> getFromEntityMapper().toRecord(entity))
+                          .orElseThrow(() -> new EntityNotFoundException("Entity with Id " + id + " not found!"));
+  }
 }

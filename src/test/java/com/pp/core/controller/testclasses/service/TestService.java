@@ -14,41 +14,42 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TestService
-    implements DefaultCreateService<InputTestRecord, ToTestEntityMapper, Long, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord>,
-               DefaultDeleteService<Long, TestEntity, TestRepository>,
-               DefaultUpdateService<Long, InputTestRecord, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord>,
-               DefaultGetByIdService<Long, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord> {
+    implements
+    DefaultCreateService<InputTestRecord, ToTestEntityMapper, Long, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord>,
+    DefaultDeleteService<Long, TestEntity, TestRepository>,
+    DefaultUpdateService<Long, InputTestRecord, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord>,
+    DefaultGetByIdService<Long, TestEntity, TestRepository, FromTestEntityMapper, OutputTestRecord> {
 
-    private final TestRepository testRepository;
-    private final ToTestEntityMapper toTestEntityMapper;
-    private final FromTestEntityMapper fromTestEntityMapper;
+  private final TestRepository testRepository;
+  private final ToTestEntityMapper toTestEntityMapper;
+  private final FromTestEntityMapper fromTestEntityMapper;
 
-    public TestService(TestRepository testRepository,
-                       ToTestEntityMapper toTestEntityMapper,
-                       FromTestEntityMapper fromTestEntityMapper) {
-        this.testRepository = testRepository;
-        this.toTestEntityMapper = toTestEntityMapper;
-        this.fromTestEntityMapper = fromTestEntityMapper;
-    }
+  public TestService(TestRepository testRepository,
+                     ToTestEntityMapper toTestEntityMapper,
+                     FromTestEntityMapper fromTestEntityMapper) {
+    this.testRepository = testRepository;
+    this.toTestEntityMapper = toTestEntityMapper;
+    this.fromTestEntityMapper = fromTestEntityMapper;
+  }
 
-    @Override
-    public FromTestEntityMapper getFromEntityMapper() {
-        return fromTestEntityMapper;
-    }
+  @Override
+  public FromTestEntityMapper getFromEntityMapper() {
+    return fromTestEntityMapper;
+  }
 
-    @Override
-    public TestRepository getRepository() {
-        return testRepository;
-    }
+  @Override
+  public TestRepository getRepository() {
+    return testRepository;
+  }
 
-    @Override
-    public ToTestEntityMapper getToEntityMapper() {
-        return toTestEntityMapper;
-    }
+  @Override
+  public ToTestEntityMapper getToEntityMapper() {
+    return toTestEntityMapper;
+  }
 
-    @Override
-    public TestEntity updateEntity(TestEntity entity, InputTestRecord record) {
-        entity.setName(record.name());
-        return entity;
-    }
+  @Override
+  public TestEntity updateEntity(TestEntity entity, InputTestRecord record) {
+    entity.setName(record.name());
+    return entity;
+  }
 }

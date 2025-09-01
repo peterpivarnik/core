@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR)
 public interface ToTestEntityMapper extends ToEntityMapper<InputTestRecord, TestEntity> {
 
-    @Override
-    @Mapping(target = "id", ignore = true)
-    TestEntity toEntity(InputTestRecord record);
+  @Override
+  @Mapping(target = "id", ignore = true)
+  TestEntity toEntity(InputTestRecord record);
 }

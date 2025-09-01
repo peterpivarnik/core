@@ -10,11 +10,11 @@ import java.io.Serializable;
  */
 public interface GetByIdService<I extends Serializable, R extends Record> {
 
-    /**
-     * Gets entity by its id.
-     *
-     * @param id id of the entity
-     * @return mapped entity to record
-     */
-    R getById(final I id);
+  /**
+   * Gets entity by its id.
+   *
+   * @param id id of the entity
+   * @return mapped entity to record
+   */
+  R getById(final I id);
 }

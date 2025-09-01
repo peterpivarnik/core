@@ -10,11 +10,11 @@ import com.pp.core.dao.entity.BaseEntity;
  */
 public interface FromEntityMapper<E extends BaseEntity<?>, R extends Record> {
 
-    /**
-     * Maps entity to record.
-     *
-     * @param entity entity to be mapped
-     * @return mapped record
-     */
-    R toRecord(E entity);
+  /**
+   * Maps entity to record.
+   *
+   * @param entity entity to be mapped
+   * @return mapped record
+   */
+  R toRecord(E entity);
 }

@@ -8,11 +8,11 @@ package com.pp.core.controller.mapper;
  */
 public interface ToDtoMapper<R extends Record, D> {
 
-    /**
-     * Map record to dto.
-     *
-     * @param record record to be mapped
-     * @return mapped dto
-     */
-    D toDto(R record);
+  /**
+   * Map record to dto.
+   *
+   * @param record record to be mapped
+   * @return mapped dto
+   */
+  D toDto(R record);
 }

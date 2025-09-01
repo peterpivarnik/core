@@ -24,111 +24,110 @@ import org.springframework.context.annotation.Configuration;
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class TestControllerTest {
 
-    @Configuration
-    @ComponentScan("com.pp.core")
-    public static class SpringConfig {
+  @LocalServerPort
+  private int port;
+  @Autowired
+  private TestRepository testRepository;
 
-    }
+  private static TestEntity getTestEntity() {
+    TestEntity entity = new TestEntity();
+    entity.setName("test");
+    return entity;
+  }
 
-    @LocalServerPort
-    private int port;
+  @BeforeEach
+  void setUp() {
+    testRepository.deleteAll();
+  }
 
-    @Autowired
-    private TestRepository testRepository;
+  @Test
+  void shouldCreateTestResource() {
+    String name = "test";
+    TestDto request = new TestDto();
+    request.setName(name);
 
-    @BeforeEach
-    void setUp() {
-        testRepository.deleteAll();
-    }
+    TestDto testDto = RestAssured.given()
+                                 .port(port)
+                                 .accept(JSON)
+                                 .contentType(JSON)
+                                 .body(request)
+                                 .when()
+                                 .post("/test")
+                                 .then()
+                                 .statusCode(CREATED.value())
+                                 .extract()
+                                 .as(TestDto.class);
 
-    @Test
-    void shouldCreateTestResource() {
-        String name = "test";
-        TestDto request = new TestDto();
-        request.setName(name);
+    assertThat(testDto).isNotNull();
+    assertThat(testDto.getName()).isEqualTo(name);
+  }
 
-        TestDto testDto = RestAssured.given()
-                                     .port(port)
-                                     .accept(JSON)
-                                     .contentType(JSON)
-                                     .body(request)
-                                     .when()
-                                     .post("/test")
-                                     .then()
-                                     .statusCode(CREATED.value())
-                                     .extract()
-                                     .as(TestDto.class);
+  @Test
+  void shouldGetTestResourceById() {
+    TestEntity savedEntity = saveTestEntity();
 
-        assertThat(testDto).isNotNull();
-        assertThat(testDto.getName()).isEqualTo(name);
-    }
+    TestDto testDto = RestAssured.given()
+                                 .port(port)
+                                 .accept(JSON)
+                                 .contentType(JSON)
+                                 .when()
+                                 .get("/test/" + savedEntity.getId())
+                                 .then()
+                                 .statusCode(OK.value())
+                                 .extract()
+                                 .as(TestDto.class);
 
-    @Test
-    void shouldGetTestResourceById() {
-        TestEntity savedEntity = saveTestEntity();
+    assertThat(testDto).isNotNull();
+    assertThat(testDto.getName()).isEqualTo(savedEntity.getName());
+  }
 
-        TestDto testDto = RestAssured.given()
-                                     .port(port)
-                                     .accept(JSON)
-                                     .contentType(JSON)
-                                     .when()
-                                     .get("/test/" + savedEntity.getId())
-                                     .then()
-                                     .statusCode(OK.value())
-                                     .extract()
-                                     .as(TestDto.class);
+  @Test
+  void shouldDeleteTestResourceById() {
+    TestEntity savedEntity = saveTestEntity();
 
-        assertThat(testDto).isNotNull();
-        assertThat(testDto.getName()).isEqualTo(savedEntity.getName());
-    }
+    RestAssured.given()
+               .port(port)
+               .accept(JSON)
+               .contentType(JSON)
+               .when()
+               .delete("/test/" + savedEntity.getId())
+               .then()
+               .statusCode(NO_CONTENT.value());
 
-    @Test
-    void shouldDeleteTestResourceById() {
-        TestEntity savedEntity = saveTestEntity();
+    List<TestEntity> testEntities = testRepository.findAll();
+    assertThat(testEntities).isEmpty();
+  }
 
-        RestAssured.given()
-                   .port(port)
-                   .accept(JSON)
-                   .contentType(JSON)
-                   .when()
-                   .delete("/test/" + savedEntity.getId())
-                   .then()
-                   .statusCode(NO_CONTENT.value());
+  @Test
+  void shouldUpdateTestResourceById() {
+    TestEntity savedEntity = saveTestEntity();
 
-        List<TestEntity> testEntities = testRepository.findAll();
-        assertThat(testEntities).isEmpty();
-    }
+    UpdateTestDto request = new UpdateTestDto();
+    request.setName("updated");
 
-    @Test
-    void shouldUpdateTestResourceById() {
-        TestEntity savedEntity = saveTestEntity();
+    RestAssured.given()
+               .port(port)
+               .accept(JSON)
+               .contentType(JSON)
+               .body(request)
+               .when()
+               .put("/test/" + savedEntity.getId())
+               .then()
+               .statusCode(OK.value());
 
-        UpdateTestDto request = new UpdateTestDto();
-        request.setName("updated");
+    List<TestEntity> testEntities = testRepository.findAll();
+    assertThat(testEntities).hasSize(1);
+    assertThat(testEntities.getFirst().getName()).isEqualTo(request.getName());
+  }
 
-        RestAssured.given()
-                   .port(port)
-                   .accept(JSON)
-                   .contentType(JSON)
-                   .body(request)
-                   .when()
-                   .put("/test/" + savedEntity.getId())
-                   .then()
-                   .statusCode(OK.value());
+  private TestEntity saveTestEntity() {
+    TestEntity entity = getTestEntity();
+    return testRepository.save(entity);
+  }
 
-        List<TestEntity> testEntities = testRepository.findAll();
-        assertThat(testEntities).hasSize(1);
-        assertThat(testEntities.getFirst().getName()).isEqualTo(request.getName());
-    }
+  @Configuration
+  @ComponentScan("com.pp.core")
+  public static class SpringConfig {
 
-    private TestEntity saveTestEntity() {
-        TestEntity entity = getTestEntity();
-        return testRepository.save(entity);
-    }
-
-    private static TestEntity getTestEntity() {
-        TestEntity entity = new TestEntity();
-        entity.setName("test");
-        return entity;
-    }
+  }
 }

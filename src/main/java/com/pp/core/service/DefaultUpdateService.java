@@ -26,32 +26,32 @@ public interface DefaultUpdateService<
     BR extends BaseRepository<I, E>,
     FEM extends FromEntityMapper<E, OR>,
     OR extends Record> extends UpdateService<I, IR, OR>,
-                               RepositoryProvider<I, E, BR>,
-                               FromEntityMapperProvider<I, E, FEM, OR> {
+    RepositoryProvider<I, E, BR>,
+    FromEntityMapperProvider<I, E, FEM, OR> {
 
-    /**
-     * Updates an existing entity with the provided record data.
-     *
-     * @param id     identifier of the entity to update
-     * @param record record containing the update data
-     * @return updated entity mapped to record
-     * @throws EntityNotFoundException if entity with given id is not found
-     */
-    @Override
-    default OR update(I id, IR record) {
-        return getRepository().findById(id)
-                              .map(entity -> updateEntity(entity, record))
-                              .map(entity -> getRepository().save(entity))
-                              .map(entity -> getFromEntityMapper().toRecord(entity))
-                              .orElseThrow(() -> new EntityNotFoundException("Entity with Id " + id + " not found!"));
-    }
+  /**
+   * Updates an existing entity with the provided record data.
+   *
+   * @param id     identifier of the entity to update
+   * @param record record containing the update data
+   * @return updated entity mapped to record
+   * @throws EntityNotFoundException if entity with given id is not found
+   */
+  @Override
+  default OR update(I id, IR record) {
+    return getRepository().findById(id)
+                          .map(entity -> updateEntity(entity, record))
+                          .map(entity -> getRepository().save(entity))
+                          .map(entity -> getFromEntityMapper().toRecord(entity))
+                          .orElseThrow(() -> new EntityNotFoundException("Entity with Id " + id + " not found!"));
+  }
 
-    /**
-     * Updates the entity with data from the record.
-     *
-     * @param entity existing entity to be updated
-     * @param record record containing the update data
-     * @return updated entity
-     */
-    E updateEntity(E entity, IR record);
+  /**
+   * Updates the entity with data from the record.
+   *
+   * @param entity existing entity to be updated
+   * @param record record containing the update data
+   * @return updated entity
+   */
+  E updateEntity(E entity, IR record);
 }

@@ -18,10 +18,10 @@ public interface ToEntityMapperProvider<
     M extends ToEntityMapper<R, E>,
     I extends Serializable, E extends BaseEntity<I>> {
 
-    /**
-     * Returns the mapper instance that can convert records to entities.
-     *
-     * @return the ToEntityMapper implementation
-     */
-    M getToEntityMapper();
+  /**
+   * Returns the mapper instance that can convert records to entities.
+   *
+   * @return the ToEntityMapper implementation
+   */
+  M getToEntityMapper();
 }

@@ -11,12 +11,12 @@ import java.io.Serializable;
  */
 public interface UpdateService<I extends Serializable, IR extends Record, OR extends Record> {
 
-    /**
-     * Updates an existing entity identified by the given ID with the data from the provided record.
-     *
-     * @param id      the identifier of the entity to update
-     * @param request the input record containing the updated data
-     * @return the output record representing the updated entity
-     */
-    OR update(I id, IR request);
+  /**
+   * Updates an existing entity identified by the given ID with the data from the provided record.
+   *
+   * @param id      the identifier of the entity to update
+   * @param request the input record containing the updated data
+   * @return the output record representing the updated entity
+   */
+  OR update(I id, IR request);
 }

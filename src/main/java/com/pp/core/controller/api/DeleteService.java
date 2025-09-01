@@ -9,10 +9,10 @@ import java.io.Serializable;
  */
 public interface DeleteService<I extends Serializable> {
 
-    /**
-     * Deletes an entity by its ID.
-     *
-     * @param id the identifier of the entity to delete
-     */
-    void delete(I id);
+  /**
+   * Deletes an entity by its ID.
+   *
+   * @param id the identifier of the entity to delete
+   */
+  void delete(I id);
 }

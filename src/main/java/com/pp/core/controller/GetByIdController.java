@@ -29,24 +29,24 @@ public interface GetByIdController<
     D
     > extends ToDtoMapperProvider<R, M, D> {
 
-    /**
-     * Gets data by provided id.
-     *
-     * @param id id of the entity
-     * @return mapped entity to DTO
-     */
-    @GetMapping(value = "/{id}")
-    @ResponseStatus(OK)
-    @ResponseBody
-    default D getById(@PathVariable("id") final I id) {
-        R record = getService().getById(id);
-        return getToDtoMapper().toDto(record);
-    }
+  /**
+   * Gets data by provided id.
+   *
+   * @param id id of the entity
+   * @return mapped entity to DTO
+   */
+  @GetMapping(value = "/{id}")
+  @ResponseStatus(OK)
+  @ResponseBody
+  default D getById(@PathVariable("id") final I id) {
+    R record = getService().getById(id);
+    return getToDtoMapper().toDto(record);
+  }
 
-    /**
-     * Returns the service instance that provides entity retrieval functionality.
-     *
-     * @return the service implementing ByIdGetter interface
-     */
-    S getService();
+  /**
+   * Returns the service instance that provides entity retrieval functionality.
+   *
+   * @return the service implementing ByIdGetter interface
+   */
+  S getService();
 }
