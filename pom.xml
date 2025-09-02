@@ -148,4 +148,8 @@
             </plugin>
         </plugins>
     </build>
+    <scm>
+        <developerConnection>scm:git:https://github.com/peterpivarnik/core</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 </project>
