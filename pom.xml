@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.pp.core</groupId>
     <artifactId>core</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
     <name>core</name>
     <description>Core for spring boot projects</description>
@@ -149,6 +149,6 @@
     </build>
     <scm>
         <developerConnection>scm:git:https://github.com/peterpivarnik/core</developerConnection>
-        <tag>HEAD</tag>
+        <tag>core-0.1.1-SNAPSHOT</tag>
     </scm>
 </project>
