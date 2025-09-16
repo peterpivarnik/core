@@ -87,16 +87,36 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_TTY: $(tty)
         run: |
+          # Create Maven settings.xml with Sonatype credentials
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << EOF
+          <settings>
+          <servers>
+           <server>
+             <id>ossrh</id>
+             <username>${SONATYPE_USERNAME}</username>
+             <password>${SONATYPE_PASSWORD}</password>
+           </server>
+           <server>
+             <id>central-s01</id>
+             <username>${SONATYPE_USERNAME}</username>
+             <password>${SONATYPE_PASSWORD}</password>
+           </server>
+          </servers>
+          </settings>
+          EOF
+          
+          # Deploy to Sonatype
           mvn deploy -Dmaven.deploy.skip=false \
-            -DskipTests \
-            -Possrh \
-            -Dsonatype.username=$SONATYPE_USERNAME \
-            -Dsonatype.password=$SONATYPE_PASSWORD \
-            -Dgpg.passphrase=$GPG_PASSPHRASE \
-            -Dgpg.executable=gpg \
-            -Dgpg.pinentry-mode=loopback
-
-      # 8. Perform Maven release
+          -DskipTests \
+          -Possrh \
+          -Dsonatype.username=$SONATYPE_USERNAME \
+          -Dsonatype.password=$SONATYPE_PASSWORD \
+          -Dgpg.passphrase=$GPG_PASSPHRASE \
+          -Dgpg.executable=gpg \
+          -Dgpg.pinentry-mode=loopback
+          
+          # 8. Perform Maven release
       - name: Release perform
         env:
           GPG_TTY: $(tty)
