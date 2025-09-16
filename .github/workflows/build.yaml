@@ -24,44 +24,16 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # Ensure correct GPG directory permissions
           mkdir -p ~/.gnupg
           chmod 700 ~/.gnupg
-          
-          # Configure GPG for batch mode and loopback pinentry
           echo "use-agent" >> ~/.gnupg/gpg.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          
-          # Decode and import the key
           echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
-          
-          # List imported keys
           gpg --list-secret-keys
-          
-          # Find the key ID
-          KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep pub | awk '{print $2}' | cut -d/ -f2)
 
       # 4. Build and run tests
       - name: Build with tests
-        env:
-          GPG_TTY: $(tty)
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml << EOF
-          <settings>
-            <servers>
-              <server>
-                <id>gpg.passphrase</id>
-                <passphrase>${{ secrets.GPG_PASSPHRASE }}</passphrase>
-              </server>
-            </servers>
-          </settings>
-          EOF
-          
-          mvn --batch-mode --update-snapshots verify \
-            -Dgpg.executable=gpg \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -Dgpg.pinentry-mode=loopback
+        run: mvn --batch-mode --update-snapshots verify
 
       # 5. Configure Git for release
       - name: Configure Git user
@@ -71,58 +43,31 @@ jobs:
 
       # 6. Prepare Maven release
       - name: Release prepare
-        env:
-          GPG_TTY: $(tty)
-        run: |
-          mvn -B release:prepare \
-            -Dgpg.executable=gpg \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -Dgpg.pinentry-mode=loopback
+        run: mvn -B release:prepare
 
-      # 7. Deploy to Sonatype
-      - name: Deploy to Sonatype
+      # 7. Publish to Central
+      - name: Publish to Central
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GPG_TTY: $(tty)
         run: |
-          # Create Maven settings.xml with Sonatype credentials
           mkdir -p ~/.m2
           cat > ~/.m2/settings.xml << EOF
           <settings>
-          <servers>
-           <server>
-             <id>ossrh</id>
-             <username>${SONATYPE_USERNAME}</username>
-             <password>${SONATYPE_PASSWORD}</password>
-           </server>
-           <server>
-             <id>central-s01</id>
-             <username>${SONATYPE_USERNAME}</username>
-             <password>${SONATYPE_PASSWORD}</password>
-           </server>
-          </servers>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${SONATYPE_USERNAME}</username>
+                <password>${SONATYPE_PASSWORD}</password>
+              </server>
+            </servers>
           </settings>
           EOF
-          
-          # Deploy to Sonatype
-          mvn deploy -Dmaven.deploy.skip=false \
-          -DskipTests \
-          -Possrh \
-          -Dsonatype.username=$SONATYPE_USERNAME \
-          -Dsonatype.password=$SONATYPE_PASSWORD \
-          -Dgpg.passphrase=$GPG_PASSPHRASE \
-          -Dgpg.executable=gpg \
-          -Dgpg.pinentry-mode=loopback
-          
-          # 8. Perform Maven release
+
+          mvn central:publish \
+            -Dgpg.passphrase=$GPG_PASSPHRASE
+
+      # 8. Perform Maven release
       - name: Release perform
-        env:
-          GPG_TTY: $(tty)
-        run: |
-          mvn release:perform \
-            -Darguments="-Dmaven.deploy.skip=true \
-                         -Dgpg.executable=gpg \
-                         -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-                         -Dgpg.pinentry-mode=loopback"
+        run: mvn release:perform -Darguments="-Dmaven.deploy.skip=true"
