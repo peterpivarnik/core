@@ -16,33 +16,45 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'temurin'   # "adopt" moved to "temurin"
+          distribution: 'temurin'
 
-      # 3. Build and run tests
+      # 3. Import GPG key
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          gpg --list-secret-keys
+
+      # 4. Build and run tests
       - name: Build with tests
         run: mvn --batch-mode --update-snapshots verify
 
-      # 4. Configure Git for release
+      # 5. Configure Git for release
       - name: Configure Git user
         run: |
           git config --global user.email "${{ secrets.USER_EMAIL }}"
           git config --global user.name "${{ secrets.USER_NAME }}"
 
-      # 5. Prepare Maven release
+      # 6. Prepare Maven release
       - name: Release prepare
         run: mvn -B release:prepare
 
-      # 6. Deploy to Sonatype
+      # 7. Deploy to Sonatype
       - name: Deploy to Sonatype
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           mvn deploy -Dmaven.deploy.skip=false \
             -DskipTests \
             -Possrh \
             -Dsonatype.username=$SONATYPE_USERNAME \
-            -Dsonatype.password=$SONATYPE_PASSWORD
+            -Dsonatype.password=$SONATYPE_PASSWORD \
+            -Dgpg.passphrase=$GPG_PASSPHRASE
+
 
       # 7. Perform Maven release
       - name: Release perform
