@@ -32,6 +32,18 @@ jobs:
       - name: Release prepare
         run: mvn -B release:prepare
 
-      # 6. Perform Maven release
+      # 6. Deploy to Sonatype
+      - name: Deploy to Sonatype
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: |
+          mvn deploy -Dmaven.deploy.skip=false \
+            -DskipTests \
+            -Possrh \
+            -Dsonatype.username=$SONATYPE_USERNAME \
+            -Dsonatype.password=$SONATYPE_PASSWORD
+
+      # 7. Perform Maven release
       - name: Release perform
         run: mvn release:perform -Darguments="-Dmaven.deploy.skip=true"
