@@ -9,7 +9,7 @@
     </parent>
     <groupId>io.github.peterpivarnik</groupId>
     <artifactId>core</artifactId>
-    <version>0.1.11</version>
+    <version>0.1.12-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>core</name>
     <description>Core for spring boot projects</description>
@@ -232,7 +232,7 @@
         <connection>scm:git:git://github.com/peterpivarnik/core.git</connection>
         <developerConnection>scm:git:https://github.com/peterpivarnik/core.git</developerConnection>
         <url>https://github.com/peterpivarnik/core</url>
-        <tag>core-0.1.11-SNAPSHOT</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
