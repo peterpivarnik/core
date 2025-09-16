@@ -18,119 +18,47 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3. Prepare GPG
-      - name: Import GPG key and configure
+      # 3. Import GPG key
+      - name: Import GPG key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # Ensure correct GPG directory permissions
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          
-          # Configure GPG
-          echo "use-agent" >> ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          
-          # Import GPG key with verbose output
-          echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import --verbose
-          
-          # Detailed key listing
-          gpg --list-secret-keys --keyid-format=LONG
-          
-          # Extract full key details
-          GPG_KEY_FULL=$(gpg --list-secret-keys --keyid-format=LONG | grep pub | tr -s ' ')
-          echo "Full key details: $GPG_KEY_FULL"
-          
-          # Extract key ID more robustly
-          GPG_KEY_ID=$(echo "$GPG_KEY_FULL" | awk '{print $2}' | cut -d/ -f2)
-          echo "Extracted Key ID: $GPG_KEY_ID"
-          
-          # Verify key ID is not empty
-          if [ -z "$GPG_KEY_ID" ]; then
-            echo "Error: Could not extract GPG key ID"
-            exit 1
-          fi
-          
-          # Export the public key
-          gpg --armor --export "$GPG_KEY_ID" > public-key.asc
-          
-          # Ensure correct file permissions
-          chmod 600 ~/.gnupg/*
+          # Decode the base64 key and import
+          echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
 
-      # 6. Prepare Maven release (removes SNAPSHOT)
-      - name: Release prepare
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # List imported keys to verify
+          gpg --list-secret-keys
+
+      # 4. Build and run tests
+      - name: Build with tests
+        run: mvn --batch-mode --update-snapshots verify
+
+      # 5. Configure Git for release
+      - name: Configure Git user
         run: |
-          # Robust key ID extraction
-          GPG_KEY_FULL=$(gpg --list-secret-keys --keyid-format=LONG | grep pub | tr -s ' ')
-          GPG_KEY_ID=$(echo "$GPG_KEY_FULL" | awk '{print $2}' | cut -d/ -f2)
-          
-          # Verify key ID
-          if [ -z "$GPG_KEY_ID" ]; then
-            echo "Error: Could not extract GPG key ID"
-            exit 1
-          fi
-          
-          # Print key ID for debugging
-          echo "Using GPG Key ID: $GPG_KEY_ID"
-          
-          mvn -B release:prepare \
-            -Darguments="-Dgpg.passphrase=$GPG_PASSPHRASE \
-                         -Dgpg.keyname=$GPG_KEY_ID \
-                         -Dgpg.pinentry-mode=loopback"
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+          git config --global user.name "${{ secrets.USER_NAME }}"
 
-      # 7. Deploy release version to Sonatype
+      # 6. Prepare Maven release
+      - name: Release prepare
+        run: mvn -B release:prepare
+
+      # 7. Deploy to Sonatype
       - name: Deploy to Sonatype
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # Robust key ID extraction
-          GPG_KEY_FULL=$(gpg --list-secret-keys --keyid-format=LONG | grep pub | tr -s ' ')
-          GPG_KEY_ID=$(echo "$GPG_KEY_FULL" | awk '{print $2}' | cut -d/ -f2)
-          
-          # Verify key ID
-          if [ -z "$GPG_KEY_ID" ]; then
-            echo "Error: Could not extract GPG key ID"
-            exit 1
-          fi
-          
-          # Print key ID for debugging
-          echo "Using GPG Key ID: $GPG_KEY_ID"
-          
           mvn deploy -Dmaven.deploy.skip=false \
             -DskipTests \
             -Possrh \
             -Dsonatype.username=$SONATYPE_USERNAME \
             -Dsonatype.password=$SONATYPE_PASSWORD \
-            -Dgpg.passphrase=$GPG_PASSPHRASE \
-            -Dgpg.keyname=$GPG_KEY_ID
+            -Dgpg.passphrase=$GPG_PASSPHRASE
 
-      # 8. Perform Maven release (increases to next SNAPSHOT)
+
+      # 7. Perform Maven release
       - name: Release perform
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Robust key ID extraction
-          GPG_KEY_FULL=$(gpg --list-secret-keys --keyid-format=LONG | grep pub | tr -s ' ')
-          GPG_KEY_ID=$(echo "$GPG_KEY_FULL" | awk '{print $2}' | cut -d/ -f2)
-          
-          # Verify key ID
-          if [ -z "$GPG_KEY_ID" ]; then
-            echo "Error: Could not extract GPG key ID"
-            exit 1
-          fi
-          
-          # Print key ID for debugging
-          echo "Using GPG Key ID: $GPG_KEY_ID"
-          
-          mvn release:perform \
-            -Darguments="-Dgpg.passphrase=$GPG_PASSPHRASE \
-                         -Dgpg.keyname=$GPG_KEY_ID \
-                         -Dgpg.pinentry-mode=loopback \
-                         -Dmaven.deploy.skip=true"
+        run: mvn release:perform -Darguments="-Dmaven.deploy.skip=true"
